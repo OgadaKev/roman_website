@@ -129,7 +129,550 @@ window.addEventListener("load", () => {
 const bookings = {
   music: JSON.parse(localStorage.getItem("musicBookings") || "{}"),
   video: JSON.parse(localStorage.getItem("videoBookings") || "{}"),
+  waste: JSON.parse(localStorage.getItem("wasteBookings") || "[]"),
 }
+
+// Waste Management Booking System
+function submitWasteBooking(event) {
+  event.preventDefault()
+
+  const formData = new FormData(event.target)
+  const bookingData = {
+    id: Date.now(),
+    surname: formData.get("surname"),
+    firstname: formData.get("firstname"),
+    estate: formData.get("estate"),
+    houseNo: formData.get("houseNo"),
+    flat: formData.get("flat"),
+    street: formData.get("street"),
+    telephone: formData.get("telephone"),
+    mobile: formData.get("mobile"),
+    altMobile: formData.get("altMobile"),
+    email: formData.get("email"),
+    services: formData.getAll("services"),
+    days: formData.getAll("days"),
+    paymentFrequency: formData.get("payment-frequency"),
+    startDate: formData.get("startDate"),
+    specialInstructions: formData.get("specialInstructions"),
+    bookingDate: new Date().toISOString(),
+    status: "active",
+  }
+
+  // Validate required fields
+  if (
+    !bookingData.surname ||
+    !bookingData.firstname ||
+    !bookingData.mobile ||
+    !bookingData.email ||
+    bookingData.services.length === 0 ||
+    bookingData.days.length === 0
+  ) {
+    alert("Please fill in all required fields and select at least one service and day.")
+    return
+  }
+
+  // Add to bookings
+  bookings.waste.push(bookingData)
+  localStorage.setItem("wasteBookings", JSON.stringify(bookings.waste))
+
+  // Clear form
+  event.target.reset()
+
+  alert(
+    `Booking request submitted successfully!\nBooking ID: ${bookingData.id}\nWe will contact you within 24 hours to confirm your booking.`,
+  )
+}
+
+function showWasteBookings() {
+  const bookingForm = document.querySelector(".waste-booking-system")
+  const bookingManagement = document.getElementById("waste-bookings-management")
+
+  bookingForm.style.display = "none"
+  bookingManagement.style.display = "block"
+
+  loadWasteBookings()
+}
+
+function hideWasteBookings() {
+  const bookingForm = document.querySelector(".waste-booking-system")
+  const bookingManagement = document.getElementById("waste-bookings-management")
+
+  bookingForm.style.display = "block"
+  bookingManagement.style.display = "none"
+}
+
+function switchWasteBookingsTab(type) {
+  // Remove active class from all tabs
+  document.querySelectorAll(".bookings-tab").forEach((tab) => {
+    tab.classList.remove("active")
+  })
+
+  // Hide all booking content
+  document.querySelectorAll(".bookings-content").forEach((content) => {
+    content.classList.remove("active")
+  })
+
+  // Show selected tab and content
+  document.querySelector(`[onclick="switchWasteBookingsTab('${type}')"]`).classList.add("active")
+  document.getElementById(`waste-${type}-bookings`).classList.add("active")
+
+  loadWasteBookings(type)
+}
+
+function loadWasteBookings(type = "active") {
+  const container = document.getElementById(`waste-${type}-bookings-list`)
+  const filteredBookings = bookings.waste.filter((booking) => {
+    if (type === "active") {
+      return booking.status === "active"
+    } else {
+      return booking.status !== "active"
+    }
+  })
+
+  if (filteredBookings.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <h3>No ${type === "active" ? "Active" : "Historical"} Bookings</h3>
+        <p>${type === "active" ? "Your active bookings will appear here." : "Completed and cancelled bookings will appear here."}</p>
+      </div>
+    `
+    return
+  }
+
+  container.innerHTML = filteredBookings.map((booking) => createWasteBookingItemHTML(booking)).join("")
+}
+
+function createWasteBookingItemHTML(booking) {
+  const bookingDate = new Date(booking.bookingDate).toLocaleDateString()
+  const startDate = new Date(booking.startDate).toLocaleDateString()
+
+  return `
+    <div class="booking-item">
+      <div class="booking-header">
+        <div>
+          <div class="booking-title">${booking.firstname} ${booking.surname}</div>
+          <div class="booking-id">Booking ID: ${booking.id}</div>
+        </div>
+        <div class="booking-status ${booking.status}">${booking.status.toUpperCase()}</div>
+      </div>
+      <div class="booking-details">
+        <div class="booking-detail">
+          <div class="booking-detail-label">Services</div>
+          <div class="booking-detail-value">${booking.services.join(", ")}</div>
+        </div>
+        <div class="booking-detail">
+          <div class="booking-detail-label">Schedule</div>
+          <div class="booking-detail-value">${booking.days.join(", ")}</div>
+        </div>
+        <div class="booking-detail">
+          <div class="booking-detail-label">Start Date</div>
+          <div class="booking-detail-value">${startDate}</div>
+        </div>
+        <div class="booking-detail">
+          <div class="booking-detail-label">Payment</div>
+          <div class="booking-detail-value">${booking.paymentFrequency}</div>
+        </div>
+        <div class="booking-detail">
+          <div class="booking-detail-label">Address</div>
+          <div class="booking-detail-value">${booking.estate}, ${booking.street}, House ${booking.houseNo}</div>
+        </div>
+        <div class="booking-detail">
+          <div class="booking-detail-label">Contact</div>
+          <div class="booking-detail-value">${booking.mobile} | ${booking.email}</div>
+        </div>
+      </div>
+      ${
+        booking.status === "active"
+          ? `
+        <div class="booking-actions">
+          <button class="booking-action-btn reschedule-btn" onclick="rescheduleWasteBooking(${booking.id})">Reschedule</button>
+          <button class="booking-action-btn cancel-btn" onclick="cancelWasteBooking(${booking.id})">Cancel</button>
+          <button class="booking-action-btn view-details-btn" onclick="viewWasteBookingDetails(${booking.id})">View Details</button>
+        </div>
+      `
+          : ""
+      }
+    </div>
+  `
+}
+
+function rescheduleWasteBooking(bookingId) {
+  const booking = bookings.waste.find((b) => b.id === bookingId)
+  if (!booking) return
+
+  const modal = createRescheduleModal(booking, "waste")
+  document.body.appendChild(modal)
+  modal.classList.add("active")
+}
+
+function cancelWasteBooking(bookingId) {
+  const booking = bookings.waste.find((b) => b.id === bookingId)
+  if (!booking) return
+
+  const modal = createCancellationModal(booking, "waste")
+  document.body.appendChild(modal)
+  modal.classList.add("active")
+}
+
+function createRescheduleModal(booking, type) {
+  const modal = document.createElement("div")
+  modal.className = "modal-overlay"
+
+  const currentDate = new Date()
+  const appointmentDate = new Date(booking.startDate || booking.date)
+  const hoursUntilAppointment = (appointmentDate - currentDate) / (1000 * 60 * 60)
+
+  let feeInfo = ""
+  const rescheduleAllowed = true
+
+  if (type === "waste") {
+    if (hoursUntilAppointment < 24) {
+      feeInfo = `
+        <div class="fee-calculator">
+          <h4>Rescheduling Fee</h4>
+          <p class="fee-warning">Rescheduling less than 24 hours in advance incurs a KSh 500 processing fee.</p>
+          <div class="fee-amount">KSh 500</div>
+        </div>
+      `
+    } else {
+      feeInfo = `
+        <div class="fee-calculator">
+          <h4>Rescheduling Fee</h4>
+          <p>Free rescheduling (24+ hours in advance)</p>
+          <div class="fee-amount">KSh 0</div>
+        </div>
+      `
+    }
+  } else if (type === "talent") {
+    const sessionType = booking.type || "music"
+    const minHours = sessionType === "music" ? 48 : 72
+
+    if (hoursUntilAppointment < minHours) {
+      const fee = sessionType === "music" ? 1000 : 2000
+      feeInfo = `
+        <div class="fee-calculator">
+          <h4>Rescheduling Fee</h4>
+          <p class="fee-warning">Rescheduling less than ${minHours} hours in advance incurs a processing fee.</p>
+          <div class="fee-amount">KSh ${fee}</div>
+        </div>
+      `
+    } else {
+      feeInfo = `
+        <div class="fee-calculator">
+          <h4>Rescheduling Fee</h4>
+          <p>Free rescheduling (${minHours}+ hours in advance)</p>
+          <div class="fee-amount">KSh 0</div>
+        </div>
+      `
+    }
+  }
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Reschedule Appointment</h3>
+        <button class="modal-close" onclick="closeModal(this)">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Current Date:</strong> ${appointmentDate.toLocaleDateString()}</p>
+        ${feeInfo}
+        <div class="form-group">
+          <label for="new-date">New Date:</label>
+          <input type="date" id="new-date" min="${new Date().toISOString().split("T")[0]}">
+        </div>
+        <div class="form-group">
+          <label for="reschedule-reason">Reason for Rescheduling:</label>
+          <textarea id="reschedule-reason" placeholder="Please provide a reason for rescheduling..."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-secondary" onclick="closeModal(this)">Cancel</button>
+        <button class="modal-btn modal-btn-primary" onclick="confirmReschedule(${booking.id}, '${type}')">Confirm Reschedule</button>
+      </div>
+    </div>
+  `
+
+  return modal
+}
+
+function createCancellationModal(booking, type) {
+  const modal = document.createElement("div")
+  modal.className = "modal-overlay"
+
+  const currentDate = new Date()
+  const appointmentDate = new Date(booking.startDate || booking.date)
+  const hoursUntilAppointment = (appointmentDate - currentDate) / (1000 * 60 * 60)
+
+  const feeInfo = calculateCancellationFee(hoursUntilAppointment, type, booking)
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Cancel Appointment</h3>
+        <button class="modal-close" onclick="closeModal(this)">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Appointment Date:</strong> ${appointmentDate.toLocaleDateString()}</p>
+        <p><strong>Time Until Appointment:</strong> ${Math.round(hoursUntilAppointment)} hours</p>
+        ${feeInfo}
+        <div class="form-group">
+          <label for="cancellation-reason">Reason for Cancellation:</label>
+          <textarea id="cancellation-reason" placeholder="Please provide a reason for cancellation..." required></textarea>
+        </div>
+        <p><strong>Warning:</strong> This action cannot be undone. You will need to create a new booking if you change your mind.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-secondary" onclick="closeModal(this)">Keep Appointment</button>
+        <button class="modal-btn cancel-btn" onclick="confirmCancellation(${booking.id}, '${type}')">Confirm Cancellation</button>
+      </div>
+    </div>
+  `
+
+  return modal
+}
+
+function calculateCancellationFee(hoursUntilAppointment, type, booking) {
+  let feePercentage = 0
+  let baseFee = 0
+  let feeDescription = ""
+
+  if (type === "waste") {
+    baseFee = 2000 // Estimated service fee
+    if (hoursUntilAppointment >= 24) {
+      feePercentage = 0
+      feeDescription = "No cancellation fee (24+ hours in advance)"
+    } else if (hoursUntilAppointment >= 12) {
+      feePercentage = 25
+      feeDescription = "25% of service fee (12-24 hours before)"
+    } else if (hoursUntilAppointment >= 6) {
+      feePercentage = 50
+      feeDescription = "50% of service fee (6-12 hours before)"
+    } else if (hoursUntilAppointment > 0) {
+      feePercentage = 75
+      feeDescription = "75% of service fee (less than 6 hours before)"
+    } else {
+      feePercentage = 100
+      feeDescription = "100% of service fee (no-show)"
+    }
+  } else if (type === "talent") {
+    const sessionType = booking.type || "music"
+    baseFee = sessionType === "music" ? 3000 : 15000
+
+    if (sessionType === "music") {
+      if (hoursUntilAppointment >= 48) {
+        feePercentage = 0
+        feeDescription = "No cancellation fee (48+ hours in advance)"
+      } else if (hoursUntilAppointment >= 24) {
+        feePercentage = 30
+        feeDescription = "30% of session fee (24-48 hours before)"
+      } else if (hoursUntilAppointment >= 12) {
+        feePercentage = 50
+        feeDescription = "50% of session fee (12-24 hours before)"
+      } else if (hoursUntilAppointment > 0) {
+        feePercentage = 75
+        feeDescription = "75% of session fee (less than 12 hours before)"
+      } else {
+        feePercentage = 100
+        feeDescription = "100% of session fee (no-show)"
+      }
+    } else {
+      if (hoursUntilAppointment >= 72) {
+        feePercentage = 0
+        feeDescription = "No cancellation fee (72+ hours in advance)"
+      } else if (hoursUntilAppointment >= 48) {
+        feePercentage = 25
+        feeDescription = "25% of session fee (48-72 hours before)"
+      } else if (hoursUntilAppointment >= 24) {
+        feePercentage = 50
+        feeDescription = "50% of session fee (24-48 hours before)"
+      } else if (hoursUntilAppointment > 0) {
+        feePercentage = 75
+        feeDescription = "75% of session fee (less than 24 hours before)"
+      } else {
+        feePercentage = 100
+        feeDescription = "100% of session fee (no-show)"
+      }
+    }
+  }
+
+  const feeAmount = Math.round(baseFee * (feePercentage / 100))
+  const feeClass = feeAmount > 0 ? "fee-warning" : "fee-amount"
+
+  return `
+    <div class="fee-calculator">
+      <h4>Cancellation Fee</h4>
+      <p>${feeDescription}</p>
+      <div class="${feeClass}">KSh ${feeAmount}</div>
+    </div>
+  `
+}
+
+function confirmReschedule(bookingId, type) {
+  const newDate = document.getElementById("new-date").value
+  const reason = document.getElementById("reschedule-reason").value
+
+  if (!newDate) {
+    alert("Please select a new date.")
+    return
+  }
+
+  if (!reason.trim()) {
+    alert("Please provide a reason for rescheduling.")
+    return
+  }
+
+  // Update booking
+  if (type === "waste") {
+    const booking = bookings.waste.find((b) => b.id === bookingId)
+    if (booking) {
+      booking.startDate = newDate
+      booking.rescheduleHistory = booking.rescheduleHistory || []
+      booking.rescheduleHistory.push({
+        date: new Date().toISOString(),
+        reason: reason,
+        newDate: newDate,
+      })
+      localStorage.setItem("wasteBookings", JSON.stringify(bookings.waste))
+    }
+  }
+
+  closeModal(document.querySelector(".modal-overlay"))
+  alert("Appointment rescheduled successfully!")
+
+  // Reload bookings
+  if (type === "waste") {
+    loadWasteBookings()
+  }
+}
+
+function confirmCancellation(bookingId, type) {
+  const reason = document.getElementById("cancellation-reason").value
+
+  if (!reason.trim()) {
+    alert("Please provide a reason for cancellation.")
+    return
+  }
+
+  // Update booking status
+  if (type === "waste") {
+    const booking = bookings.waste.find((b) => b.id === bookingId)
+    if (booking) {
+      booking.status = "cancelled"
+      booking.cancellationDate = new Date().toISOString()
+      booking.cancellationReason = reason
+      localStorage.setItem("wasteBookings", JSON.stringify(bookings.waste))
+    }
+  }
+
+  closeModal(document.querySelector(".modal-overlay"))
+  alert("Appointment cancelled successfully.")
+
+  // Reload bookings
+  if (type === "waste") {
+    loadWasteBookings()
+  }
+}
+
+function closeModal(element) {
+  const modal = element.closest(".modal-overlay")
+  modal.classList.remove("active")
+  setTimeout(() => {
+    modal.remove()
+  }, 300)
+}
+
+function viewWasteBookingDetails(bookingId) {
+  const booking = bookings.waste.find((b) => b.id === bookingId)
+  if (!booking) return
+
+  const modal = document.createElement("div")
+  modal.className = "modal-overlay"
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Booking Details</h3>
+        <button class="modal-close" onclick="closeModal(this)">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="booking-details">
+          <div class="booking-detail">
+            <div class="booking-detail-label">Booking ID</div>
+            <div class="booking-detail-value">${booking.id}</div>
+          </div>
+          <div class="booking-detail">
+            <div class="booking-detail-label">Client Name</div>
+            <div class="booking-detail-value">${booking.firstname} ${booking.surname}</div>
+          </div>
+          <div class="booking-detail">
+            <div class="booking-detail-label">Address</div>
+            <div class="booking-detail-value">${booking.estate}, ${booking.street}, House ${booking.houseNo}${booking.flat ? ", Flat " + booking.flat : ""}</div>
+          </div>
+          <div class="booking-detail">
+            <div class="booking-detail-label">Contact</div>
+            <div class="booking-detail-value">Mobile: ${booking.mobile}${booking.telephone ? ", Tel: " + booking.telephone : ""}${booking.altMobile ? ", Alt: " + booking.altMobile : ""}<br>Email: ${booking.email}</div>
+          </div>
+          <div class="booking-detail">
+            <div class="booking-detail-label">Services</div>
+            <div class="booking-detail-value">${booking.services.join(", ")}</div>
+          </div>
+          <div class="booking-detail">
+            <div class="booking-detail-label">Schedule</div>
+            <div class="booking-detail-value">${booking.days.join(", ")}</div>
+          </div>
+          <div class="booking-detail">
+            <div class="booking-detail-label">Payment Frequency</div>
+            <div class="booking-detail-value">${booking.paymentFrequency}</div>
+          </div>
+          <div class="booking-detail">
+            <div class="booking-detail-label">Start Date</div>
+            <div class="booking-detail-value">${new Date(booking.startDate).toLocaleDateString()}</div>
+          </div>
+          <div class="booking-detail">
+            <div class="booking-detail-label">Booking Date</div>
+            <div class="booking-detail-value">${new Date(booking.bookingDate).toLocaleDateString()}</div>
+          </div>
+          ${
+            booking.specialInstructions
+              ? `
+            <div class="booking-detail">
+              <div class="booking-detail-label">Special Instructions</div>
+              <div class="booking-detail-value">${booking.specialInstructions}</div>
+            </div>
+          `
+              : ""
+          }
+          ${
+            booking.rescheduleHistory && booking.rescheduleHistory.length > 0
+              ? `
+            <div class="booking-detail">
+              <div class="booking-detail-label">Reschedule History</div>
+              <div class="booking-detail-value">
+                ${booking.rescheduleHistory.map((r) => `${new Date(r.date).toLocaleDateString()}: ${r.reason}`).join("<br>")}
+              </div>
+            </div>
+          `
+              : ""
+          }
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-secondary" onclick="closeModal(this)">Close</button>
+      </div>
+    </div>
+  `
+
+  document.body.appendChild(modal)
+  modal.classList.add("active")
+}
+
+// Initialize waste booking form
+document.addEventListener("DOMContentLoaded", () => {
+  const wasteBookingForm = document.getElementById("waste-booking-form")
+  if (wasteBookingForm) {
+    wasteBookingForm.addEventListener("submit", submitWasteBooking)
+  }
+})
 
 // Booking System Functions
 function switchBookingTab(type) {
