@@ -238,6 +238,275 @@
                         <p>Professional fumigation to control and remove pests and harmful microorganisms.</p>
                     </div>
                 </div>
+                
+                <!-- Added comprehensive waste management booking form -->
+                <h2>Book Our Services</h2>
+                <p class="section-subtitle">Schedule your waste management and pest control services</p>
+                <div class="waste-booking-system">
+                    <form class="waste-booking-form" id="waste-booking-form">
+                        <!-- Personal Information Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Personal Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="waste-surname">Surname:</label>
+                                    <input type="text" id="waste-surname" name="surname" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="waste-firstname">First Name(s):</label>
+                                    <input type="text" id="waste-firstname" name="firstname" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Information Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Residential Address</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="waste-estate">Estate:</label>
+                                    <input type="text" id="waste-estate" name="estate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="waste-house-no">House No.:</label>
+                                    <input type="text" id="waste-house-no" name="houseNo" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="waste-flat">Flat:</label>
+                                    <input type="text" id="waste-flat" name="flat">
+                                </div>
+                                <div class="form-group">
+                                    <label for="waste-street">Street:</label>
+                                    <input type="text" id="waste-street" name="street" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Contact Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="waste-telephone">Telephone:</label>
+                                    <input type="tel" id="waste-telephone" name="telephone">
+                                </div>
+                                <div class="form-group">
+                                    <label for="waste-mobile">Mobile:</label>
+                                    <input type="tel" id="waste-mobile" name="mobile" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="waste-alt-mobile">Alt. Mobile:</label>
+                                    <input type="tel" id="waste-alt-mobile" name="altMobile">
+                                </div>
+                                <div class="form-group">
+                                    <label for="waste-email">Email:</label>
+                                    <input type="email" id="waste-email" name="email" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Services Selection Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Select Services You Would Like to Contract With Us</h3>
+                            <div class="services-checkboxes">
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="services" value="refuse-collection">
+                                        <span class="checkmark"></span>
+                                        Refuse Collection
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="services" value="sanitary">
+                                        <span class="checkmark"></span>
+                                        Sanitary Services
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="services" value="domestic-commercial-cleaning">
+                                        <span class="checkmark"></span>
+                                        Domestic and Commercial Cleaning
+                                    </label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="services" value="fumigation">
+                                        <span class="checkmark"></span>
+                                        Fumigation
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="services" value="detail-car-cleaning">
+                                        <span class="checkmark"></span>
+                                        Detail Car Cleaning
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="services" value="gardening-landscaping">
+                                        <span class="checkmark"></span>
+                                        Gardening and Landscaping
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Schedule Selection Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Select Convenient Day for Service Each Week</h3>
+                            <div class="days-checkboxes">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="monday">
+                                    <span class="checkmark"></span>
+                                    Monday
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="tuesday">
+                                    <span class="checkmark"></span>
+                                    Tuesday
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="wednesday">
+                                    <span class="checkmark"></span>
+                                    Wednesday
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="thursday">
+                                    <span class="checkmark"></span>
+                                    Thursday
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="friday">
+                                    <span class="checkmark"></span>
+                                    Friday
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="saturday">
+                                    <span class="checkmark"></span>
+                                    Saturday
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Payment Terms Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Payment Terms</h3>
+                            <p class="payment-info">Mode of Payment will be via Paybill. Contract amount will be determined based on selected services.</p>
+                            <div class="payment-options">
+                                <label class="radio-label">
+                                    <input type="radio" name="payment-frequency" value="monthly" checked>
+                                    <span class="radio-mark"></span>
+                                    Monthly
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="payment-frequency" value="quarterly">
+                                    <span class="radio-mark"></span>
+                                    Quarterly
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="payment-frequency" value="half-yearly">
+                                    <span class="radio-mark"></span>
+                                    Half-Yearly
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="payment-frequency" value="yearly">
+                                    <span class="radio-mark"></span>
+                                    Yearly
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Additional Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="waste-start-date">Preferred Start Date:</label>
+                                    <input type="date" id="waste-start-date" name="startDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="waste-special-instructions">Special Instructions:</label>
+                                    <textarea id="waste-special-instructions" name="specialInstructions" placeholder="Any specific requirements or instructions..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions Section -->
+                        <div class="form-section">
+                            <div class="terms-agreement">
+                                <label class="checkbox-label terms-checkbox">
+                                    <input type="checkbox" id="waste-terms" name="terms" required>
+                                    <span class="checkmark"></span>
+                                    I confirm having read and understood the terms and conditions
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn">Submit Booking Request</button>
+                            <button type="button" class="view-bookings-btn" onclick="showWasteBookings()">View My Bookings</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Added waste management bookings management -->
+                <div class="waste-bookings-management" id="waste-bookings-management" style="display: none;">
+                    <h2>My Waste Management Bookings</h2>
+                    <div class="bookings-tabs">
+                        <button class="bookings-tab active" onclick="switchWasteBookingsTab('active')">Active Bookings</button>
+                        <button class="bookings-tab" onclick="switchWasteBookingsTab('history')">Booking History</button>
+                    </div>
+                    
+                    <div id="waste-active-bookings" class="bookings-content active">
+                        <div class="bookings-list" id="waste-active-bookings-list">
+                            <!-- Active bookings will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div id="waste-booking-history" class="bookings-content">
+                        <div class="bookings-list" id="waste-booking-history-list">
+                            <!-- Booking history will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Added terms and conditions section -->
+                <h2>Terms and Conditions</h2>
+                <div class="terms-conditions">
+                    <div class="terms-section">
+                        <h3>Cancellation Policy</h3>
+                        <div class="policy-item">
+                            <h4>Cancellation Fees:</h4>
+                            <ul>
+                                <li><strong>24+ hours before appointment:</strong> No cancellation fee</li>
+                                <li><strong>12-24 hours before appointment:</strong> 25% of service fee</li>
+                                <li><strong>6-12 hours before appointment:</strong> 50% of service fee</li>
+                                <li><strong>Less than 6 hours before appointment:</strong> 75% of service fee</li>
+                                <li><strong>No-show:</strong> 100% of service fee</li>
+                            </ul>
+                        </div>
+                        <div class="policy-item">
+                            <h4>Rescheduling Policy:</h4>
+                            <ul>
+                                <li>Free rescheduling if done 24+ hours in advance</li>
+                                <li>One free rescheduling per booking allowed</li>
+                                <li>Additional rescheduling requests may incur a KSh 500 processing fee</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="terms-section">
+                        <h3>Service Terms</h3>
+                        <div class="policy-item">
+                            <ul>
+                                <li>All services are subject to weather conditions and accessibility</li>
+                                <li>Payment is due according to selected payment frequency</li>
+                                <li>Service interruptions due to client unavailability may incur additional charges</li>
+                                <li>Special waste disposal may require additional fees</li>
+                                <li>Equipment damage due to client negligence will be charged separately</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -489,6 +758,72 @@
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             allowfullscreen>
                         </iframe>
+                    </div>
+                </div>
+
+                <!-- Added comprehensive terms and conditions for talent center -->
+                <h2>Terms and Conditions</h2>
+                <div class="terms-conditions">
+                    <div class="terms-section">
+                        <h3>Studio Session Cancellation Policy</h3>
+                        <div class="policy-item">
+                            <h4>Music Recording Sessions (2-hour slots):</h4>
+                            <ul>
+                                <li><strong>48+ hours before session:</strong> No cancellation fee</li>
+                                <li><strong>24-48 hours before session:</strong> 30% of session fee (KSh 900)</li>
+                                <li><strong>12-24 hours before session:</strong> 50% of session fee (KSh 1,500)</li>
+                                <li><strong>Less than 12 hours before session:</strong> 75% of session fee (KSh 2,250)</li>
+                                <li><strong>No-show:</strong> 100% of session fee (KSh 3,000)</li>
+                            </ul>
+                        </div>
+                        <div class="policy-item">
+                            <h4>Video Production Sessions (full-day):</h4>
+                            <ul>
+                                <li><strong>72+ hours before session:</strong> No cancellation fee</li>
+                                <li><strong>48-72 hours before session:</strong> 25% of session fee (KSh 3,750)</li>
+                                <li><strong>24-48 hours before session:</strong> 50% of session fee (KSh 7,500)</li>
+                                <li><strong>Less than 24 hours before session:</strong> 75% of session fee (KSh 11,250)</li>
+                                <li><strong>No-show:</strong> 100% of session fee (KSh 15,000)</li>
+                            </ul>
+                        </div>
+                        <div class="policy-item">
+                            <h4>Rescheduling Policy:</h4>
+                            <ul>
+                                <li><strong>Music Sessions:</strong> Free rescheduling if done 48+ hours in advance</li>
+                                <li><strong>Video Sessions:</strong> Free rescheduling if done 72+ hours in advance</li>
+                                <li>One free rescheduling per booking allowed</li>
+                                <li>Additional rescheduling requests incur a KSh 1,000 processing fee</li>
+                                <li>Emergency rescheduling (less than 24 hours) subject to availability and 50% fee</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="terms-section">
+                        <h3>Studio Session Terms</h3>
+                        <div class="policy-item">
+                            <ul>
+                                <li>Sessions must start on time; late arrivals will not extend session duration</li>
+                                <li>Maximum 4 people allowed in studio during music sessions</li>
+                                <li>Video production includes basic lighting and audio setup</li>
+                                <li>Raw footage/audio files provided within 48 hours of session</li>
+                                <li>Edited content delivery timeline to be agreed upon separately</li>
+                                <li>Equipment damage due to client negligence will be charged at replacement cost</li>
+                                <li>Studio rules and guidelines must be followed at all times</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="terms-section">
+                        <h3>E-book Publishing Terms</h3>
+                        <div class="policy-item">
+                            <ul>
+                                <li>Authors retain full copyright of their content</li>
+                                <li>Content must be original and not infringe on existing copyrights</li>
+                                <li>Angaza Nyota Solutions reserves the right to remove inappropriate content</li>
+                                <li>Publishing services include basic formatting and platform upload</li>
+                                <li>Marketing and promotion services available at additional cost</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
